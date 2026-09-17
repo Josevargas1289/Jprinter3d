@@ -1,0 +1,19 @@
+{
+  "name": "JPrinter3D - Cotizaciones y facturas",
+  "short_name": "JPrinter3D",
+  "description": "Calculadora profesional para cotizaciones y facturas de impresión 3D.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08111f",
+  "theme_color": "#08111f",
+  "orientation": "portrait",
+  "lang": "es-CO",
+  "icons": [
+    {
+      "src": "/logo-jprinter3d.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
