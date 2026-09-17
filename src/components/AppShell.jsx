@@ -3,7 +3,6 @@ import Header from './Header';
 import CalculatorForm from './CalculatorForm';
 import ResultsPanel from './ResultsPanel';
 import QuotePreview from './QuotePreview';
-import { formatCurrency } from '../utils/format';
 
 export default function AppShell({ calculator, theme }) {
   const quoteRef = useRef(null);
@@ -16,9 +15,9 @@ export default function AppShell({ calculator, theme }) {
           <div className="page-intro">
             <div>
               <p className="eyebrow">Herramienta de cotización</p>
-              <h1>Calcula un precio justo<br /><em>para cada impresión.</em></h1>
+              <h1>Tu próxima impresión,<br /><em>bien cotizada.</em></h1>
             </div>
-            <p>De los datos de tu laminador a una cotización lista para compartir. Precios en pesos colombianos.</p>
+            <p>Una cotización clara a partir del material, el peso y el tiempo de impresión.</p>
           </div>
           <div className="workspace-grid">
             <CalculatorForm calculator={calculator} />
@@ -34,10 +33,6 @@ export default function AppShell({ calculator, theme }) {
         </main>
         <footer className="site-footer"><span>JPrinter3D</span><span>Hecho para imprimir buenas ideas.</span></footer>
       </div>
-      <a className="mobile-price-bar" href="#resultado" aria-label={`Ver precio sugerido: ${formatCurrency(calculator.results.selectedUnitPrice)}`}>
-        <span><small>Precio por unidad</small><strong>{formatCurrency(calculator.results.selectedUnitPrice)}</strong></span>
-        <span className="mobile-price-arrow" aria-hidden="true">↓</span>
-      </a>
     </div>
   );
 }

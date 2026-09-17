@@ -26,6 +26,7 @@ export default function CalculatorForm({ calculator }) {
           <Field label="Tiempo de impresión" hint="horas por pieza">{number('printHours', { step: '0.1' })}</Field>
         </div>
         <div className="material-reference"><span className="reference-mark" aria-hidden="true">↗</span><div><strong>{material.label} · {formatCurrency(material.marketRollPrice)}/kg</strong><span>Base de referencia Colombia · {MARKET_UPDATED_AT}</span></div><button type="button" onClick={() => applyMarketRates()} title="Restaurar valores de mercado">Actualizar</button></div>
+        <a className="inline-mobile-result" href="#resultado"><span><small>Precio sugerido por unidad</small><strong>{formatCurrency(calculator.results.selectedUnitPrice)}</strong></span><span aria-hidden="true">Ver opciones ↗</span></a>
       </div>
 
       <div className="form-section bordered">

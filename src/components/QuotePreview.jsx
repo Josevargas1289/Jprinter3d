@@ -26,7 +26,7 @@ const QuotePreview = forwardRef(function QuotePreview({ calculator }, ref) {
       <div ref={ref} className="quote-sheet">
         <div className="grid gap-5 border-b border-[var(--quote-border)] pb-5 sm:grid-cols-[1fr_auto] sm:items-start">
           <div className="flex items-start gap-4">
-            <img src={`${import.meta.env.BASE_URL}logo-jprinter3d.png`} alt="Logo JPrinter3D" className="h-16 w-16 rounded-lg border border-[var(--quote-border)] object-contain p-2" />
+            <img src={`${import.meta.env.BASE_URL}logo-jprinter3d.png`} alt="Logo JPrinter3D" className="quote-logo h-16 w-16 rounded-lg border border-[var(--quote-border)] object-contain p-2" />
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--quote-muted)]">{form.businessName || 'JPrinter3D'}</p>
               <h3 className="mt-1 text-2xl font-black text-[var(--quote-text)]">{documentTitle}</h3>
@@ -56,12 +56,12 @@ const QuotePreview = forwardRef(function QuotePreview({ calculator }, ref) {
           <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
             <div>
               <p className="text-sm font-bold text-[var(--quote-muted)]">{results.selectedPriceLabel}</p>
-              <p className="mt-2 text-4xl font-black text-[var(--quote-text)]">{formatCurrency(results.selectedUnitPrice)}</p>
+              <p className="quote-unit-price mt-2 text-4xl font-black text-[var(--quote-text)]">{formatCurrency(results.selectedUnitPrice)}</p>
               <p className="mt-1 text-sm text-[var(--quote-muted)]">Valor por unidad, expresado en COP</p>
             </div>
-            <div className="min-w-52 rounded-lg border border-[var(--quote-border)] bg-[var(--quote-panel)] p-4 text-right">
+            <div className="quote-total rounded-lg border border-[var(--quote-border)] bg-[var(--quote-panel)] p-4 text-right">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--quote-muted)]">{totalLabel}</p>
-              <p className="mt-1 text-2xl font-black text-[var(--quote-text)]">{formatCurrency(results.totalQuote)}</p>
+              <p className="quote-total-price mt-1 text-2xl font-black text-[var(--quote-text)]">{formatCurrency(results.totalQuote)}</p>
             </div>
           </div>
         </div>
