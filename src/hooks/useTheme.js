@@ -3,7 +3,7 @@ import { THEME_STORAGE_KEY } from '../constants/materials';
 import { useLocalStorage } from './useLocalStorage';
 
 export function useTheme() {
-  const [theme, setTheme] = useLocalStorage(THEME_STORAGE_KEY, 'dark');
+  const [theme, setTheme] = useLocalStorage(THEME_STORAGE_KEY, 'light');
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

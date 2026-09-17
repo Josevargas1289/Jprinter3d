@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { DEFAULT_FORM, EMPTY_FORM, MATERIALS, STORAGE_KEY } from '../constants/materials';
+import { DEFAULT_FORM, EMPTY_FORM, MARKET_ASSUMPTIONS, MATERIALS, QUICK_PRESETS, STORAGE_KEY } from '../constants/materials';
 import { calculateQuote } from '../utils/quoteLogic';
 import { useLocalStorage } from './useLocalStorage';
 
@@ -18,12 +18,42 @@ export function useCalculator() {
     }));
   };
 
-  const updateMaterialType = (materialType) => {
-    const watts = MATERIALS[materialType]?.watts ?? DEFAULT_FORM.printerPower;
+  const applyMarketRates = (materialType = form.materialType) => {
+    const material = MATERIALS[materialType] || MATERIALS.PLA;
     setForm((current) => ({
       ...current,
       materialType,
-      printerPower: watts,
+      rollPrice: material.marketRollPrice,
+      rollWeight: 1000,
+      printerPower: material.watts,
+      wastePercent: material.wastePercent,
+      failureRate: material.failureRate,
+      kwhPrice: current.kwhPrice || MARKET_ASSUMPTIONS.kwhPrice,
+      machineHour: current.machineHour || MARKET_ASSUMPTIONS.machineHour,
+      laborRate: current.laborRate || MARKET_ASSUMPTIONS.laborRate,
+      targetMargin: current.targetMargin || MARKET_ASSUMPTIONS.targetMargin,
+    }));
+  };
+
+  const updateMaterialType = (materialType) => {
+    const material = MATERIALS[materialType] || MATERIALS.PLA;
+    setForm((current) => ({
+      ...current,
+      materialType,
+      printerPower: material.watts,
+      rollPrice: material.marketRollPrice,
+      wastePercent: material.wastePercent,
+      failureRate: material.failureRate,
+    }));
+  };
+
+  const applyPreset = (presetKey) => {
+    const preset = QUICK_PRESETS[presetKey];
+    if (!preset) return;
+
+    setForm((current) => ({
+      ...current,
+      ...preset.values,
     }));
   };
 
@@ -47,6 +77,8 @@ export function useCalculator() {
     results,
     updateField,
     updateMaterialType,
+    applyPreset,
+    applyMarketRates,
     resetForm,
     clearAll,
   };

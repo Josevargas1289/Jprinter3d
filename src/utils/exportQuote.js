@@ -29,7 +29,7 @@ function triggerDownload(dataUrl, filename) {
 
 async function renderQuote(quoteNode) {
   return html2canvas(quoteNode, {
-    backgroundColor: '#08111f',
+    backgroundColor: '#ffffff',
     scale: Math.max(window.devicePixelRatio || 1, 2),
     useCORS: true,
     logging: false,
@@ -63,15 +63,14 @@ export async function exportQuotePdf({ quoteNode, form, results }) {
   const x = (pageWidth - renderWidth) / 2;
   const y = Math.max((pageHeight - renderHeight) / 2, margin);
 
-  pdf.setFillColor(8, 17, 31);
+  pdf.setFillColor(255, 255, 255);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
-
   pdf.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight, undefined, 'FAST');
 
   const footer = form.businessName || 'JPrinter3D';
-  pdf.setTextColor(255, 255, 255);
+  pdf.setTextColor(71, 85, 105);
   pdf.setFontSize(8);
-  pdf.text(`${footer} • Cotización ${results?.quoteNumber || 'N/A'} • Valores expresados en COP`, margin, pageHeight - 6);
+  pdf.text(`${footer} - Cotización ${results?.quoteNumber || 'N/A'} - Valores expresados en COP`, margin, pageHeight - 6);
 
   pdf.save(buildFilename(form, 'pdf'));
 }

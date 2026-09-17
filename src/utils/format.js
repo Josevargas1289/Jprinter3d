@@ -18,7 +18,7 @@ export function ceilTo(value, step) {
 }
 
 export function formatDateTime(timestamp) {
-  if (!timestamp) return '—';
+  if (!timestamp) return '-';
 
   return new Intl.DateTimeFormat('es-CO', {
     dateStyle: 'short',

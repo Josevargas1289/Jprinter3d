@@ -9,10 +9,10 @@ export default function AppShell({ calculator, theme }) {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1480px] flex-col px-4 py-4 sm:px-6 lg:px-8">
         <Header theme={theme} />
 
-        <main className="grid flex-1 gap-6 pb-safe lg:grid-cols-[1.05fr_0.95fr]">
+        <main className="grid flex-1 gap-5 pb-safe xl:grid-cols-[minmax(0,1.08fr)_minmax(430px,0.92fr)]">
           <section className="space-y-6">
             <CalculatorForm calculator={calculator} />
           </section>
