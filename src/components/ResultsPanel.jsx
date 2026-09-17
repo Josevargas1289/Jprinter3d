@@ -1,68 +1,46 @@
 import BreakdownRow from './BreakdownRow';
 import ExportButtons from './ExportButtons';
 import PriceCard from './PriceCard';
-import { MARKET_ASSUMPTIONS, MARKET_UPDATED_AT } from '../constants/materials';
+import { MARKET_UPDATED_AT } from '../constants/materials';
 import { formatCurrency } from '../utils/format';
 
 export default function ResultsPanel({ calculator, quoteRef }) {
-  const { form, results } = calculator;
-  const marginLabel = `${Math.round(results.effectiveMargin * 100)}%`;
-  const competitivenessLabel = results.competitivenessGap > 0.08 ? 'Por encima del mercado' : results.competitivenessGap < -0.08 ? 'Muy competitivo' : 'En rango competitivo';
+  const { form, results, updateField } = calculator;
+  const hasInputs = Number(form.usedGrams) > 0 && Number(form.printHours) > 0;
 
   return (
-    <section className="tool-panel p-4 sm:p-5 lg:sticky lg:top-4">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="eyebrow">Precio sugerido</p>
-          <h2 className="mt-1 text-3xl font-black text-[var(--text)] sm:text-4xl">{formatCurrency(results.selectedUnitPrice)}</h2>
-          <p className="mt-2 text-sm text-[var(--muted)]">{results.selectedPriceLabel} por unidad</p>
+    <section id="resultado" className="results-column" aria-labelledby="results-heading">
+      <div className="column-heading"><span className="step-number">02</span><div><p className="eyebrow">En tiempo real</p><h2 id="results-heading">Tu precio sugerido</h2></div></div>
+      <div className="price-feature">
+        <div className="price-feature-top"><span>Precio por unidad</span><span className="currency-badge">COP</span></div>
+        <p className="feature-amount">{formatCurrency(results.selectedUnitPrice)}</p>
+        <div className="feature-bottom"><span>{results.selectedPriceLabel}</span><span>{results.quantity} {results.quantity === 1 ? 'pieza' : 'piezas'} · Total {formatCurrency(results.totalQuote)}</span></div>
+      </div>
+      {!hasInputs ? <p className="input-reminder">Añade el peso y el tiempo de tu laminador para afinar el precio.</p> : null}
+      <div className="price-options">
+        <div className="section-title"><h3>Elige cómo cotizar</h3><span>Por unidad</span></div>
+        <div className="option-list">
+          <PriceCard title="Competitivo" subtitle="Precio de entrada" value={results.minimumPrice} selected={form.priceType === 'minimum'} onClick={() => updateField('priceType', 'minimum')} />
+          <PriceCard title="Recomendado" subtitle="Equilibrio ideal" value={results.recommendedPrice} selected={form.priceType === 'recommended'} onClick={() => updateField('priceType', 'recommended')} />
+          <PriceCard title="Premium" subtitle="Mayor valor" value={results.premiumPrice} selected={form.priceType === 'premium'} onClick={() => updateField('priceType', 'premium')} />
         </div>
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-right">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">Total</p>
-          <p className="mt-1 text-lg font-black text-[var(--text)]">{formatCurrency(results.totalQuote)}</p>
+        <button type="button" className={`custom-choice ${form.priceType === 'custom' ? 'active' : ''}`} onClick={() => updateField('priceType', 'custom')}>Definir mi propio precio <span>↗</span></button>
+        {form.priceType === 'custom' ? <label className="custom-price-field">Precio personalizado por unidad <input className="form-control" type="number" min="0" inputMode="numeric" value={form.customPrice} onChange={(event) => updateField('customPrice', event.target.value)} /></label> : null}
+      </div>
+      <div className="result-summary"><div><span>Costo de producción</span><strong>{formatCurrency(results.baseCost)}</strong></div><div><span>Ganancia por pieza</span><strong>{formatCurrency(results.selectedProfit)}</strong></div><div><span>Margen estimado</span><strong>{Math.round(results.effectiveMargin * 100)}%</strong></div></div>
+      <details className="disclosure results-disclosure"><summary>Ver desglose y referencia <span>Detalles</span></summary>
+        <div className="breakdown-list">
+          <BreakdownRow label="Material + desperdicio" value={formatCurrency(results.materialCost)} />
+          <BreakdownRow label="Energía" value={formatCurrency(results.energyCost)} />
+          <BreakdownRow label="Máquina" value={formatCurrency(results.machineCost)} />
+          <BreakdownRow label="Mano de obra" value={formatCurrency(results.laborCost)} />
+          <BreakdownRow label="Reserva de fallas" value={formatCurrency(results.riskReserve)} />
+          <BreakdownRow label="Extras" value={formatCurrency(Number(form.extras) || 0)} />
+          <BreakdownRow label="Referencia de mercado" value={formatCurrency(results.marketBenchmark)} strong />
         </div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <Metric label="Margen" value={marginLabel} />
-        <Metric label="Ganancia/u" value={formatCurrency(results.selectedProfit)} />
-        <Metric label="COP/g" value={formatCurrency(results.pricePerGram)} />
-      </div>
-
-      <div className="mt-4 grid gap-3">
-        <PriceCard title="Mínimo rentable" value={results.minimumPrice} profit={results.minimumProfit} badge="Piso" tone="minimum" />
-        <PriceCard title="Recomendado" value={results.recommendedPrice} profit={results.recommendedProfit} badge="Mercado" tone="recommended" />
-        <PriceCard title="Premium" value={results.premiumPrice} profit={results.premiumProfit} badge="Valor" tone="premium" />
-      </div>
-
-      <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4">
-        <BreakdownRow label="Referencia de mercado" value={formatCurrency(results.marketBenchmark)} strong />
-        <BreakdownRow label="Estado competitivo" value={competitivenessLabel} />
-        <BreakdownRow label="Material + desperdicio" value={formatCurrency(results.materialCost)} />
-        <BreakdownRow label="Energía" value={formatCurrency(results.energyCost)} />
-        <BreakdownRow label="Máquina" value={formatCurrency(results.machineCost)} />
-        <BreakdownRow label="Mano de obra" value={formatCurrency(results.laborCost)} />
-        <BreakdownRow label="Reserva fallas" value={formatCurrency(results.riskReserve)} />
-        <BreakdownRow label="Extras" value={formatCurrency(Number(form.extras) || 0)} />
-        <BreakdownRow label="Costo real por unidad" value={formatCurrency(results.baseCost)} strong />
-      </div>
-
-      <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--highlight)] p-4 text-sm leading-6 text-[var(--muted)]">
-        Mercado actualizado: {MARKET_UPDATED_AT}. Base editable: kWh {formatCurrency(MARKET_ASSUMPTIONS.kwhPrice)}, mano de obra {formatCurrency(MARKET_ASSUMPTIONS.laborRate)}/h y pedido mínimo {formatCurrency(MARKET_ASSUMPTIONS.minimumOrder)}.
-      </div>
-
-      <div className="mt-4">
-        <ExportButtons form={form} results={results} quoteRef={quoteRef} />
-      </div>
+        <p className="source-note">Referencia orientativa en Colombia · {MARKET_UPDATED_AT}. Ajusta tus costos reales para afinar la cotización.</p>
+      </details>
+      <div className="export-area"><ExportButtons form={form} results={results} quoteRef={quoteRef} /></div>
     </section>
-  );
-}
-
-function Metric({ label, value }) {
-  return (
-    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
-      <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">{label}</p>
-      <p className="mt-1 truncate text-sm font-black text-[var(--text)]">{value}</p>
-    </div>
   );
 }

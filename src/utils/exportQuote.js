@@ -1,6 +1,3 @@
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
-
 function safeFilePart(value, fallback) {
   return (
     String(value || fallback)
@@ -28,6 +25,7 @@ function triggerDownload(dataUrl, filename) {
 }
 
 async function renderQuote(quoteNode) {
+  const { default: html2canvas } = await import('html2canvas');
   return html2canvas(quoteNode, {
     backgroundColor: '#ffffff',
     scale: Math.max(window.devicePixelRatio || 1, 2),
@@ -44,6 +42,7 @@ export async function exportQuoteImage({ quoteNode, form }) {
 }
 
 export async function exportQuotePdf({ quoteNode, form, results }) {
+  const { jsPDF } = await import('jspdf');
   const canvas = await renderQuote(quoteNode);
   const imgData = canvas.toDataURL('image/png');
   const pdf = new jsPDF({
